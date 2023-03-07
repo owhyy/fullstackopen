@@ -1,34 +1,77 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
+import Notification from "./components/Notification";
+import phonebookService from "./services/phonebook";
+
+import "./index.css";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newPhone, setNewPhone] = useState("");
   const [showWith, setShowWith] = useState("");
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
-  const hook = () => {
-    axios.get("http://localhost:3001/persons").then((response) => {
-      setPersons(response.data);
-    });
-  };
-
-  useEffect(hook, []);
+  useEffect(() => {
+    phonebookService
+      .getAll()
+      .then((initialPersons) => setPersons(initialPersons));
+  }, []);
 
   const addPerson = (event) => {
     event.preventDefault();
 
-    if (persons.filter((p) => p.name === newName).length !== 0) {
-      alert(`${newName} is already added to the phonebook`);
+    const possiblyExistingPerson = persons.filter((p) => p.name === newName)[0];
+    if (possiblyExistingPerson) {
+      if (
+        window.confirm(
+          `${newName} is already added to the phonebook. do you want to replace its number with ${newPhone}?`
+        )
+      ) {
+        phonebookService
+          .updateNumber(possiblyExistingPerson.id, {
+            ...possiblyExistingPerson,
+            phone: newPhone,
+          })
+          .then((updatedPerson) => {
+            setPersons(
+              persons.map((p) =>
+                p.id !== updatedPerson.id ? p : updatedPerson
+              )
+            );
+            setSuccessMessage(
+              `${updatedPerson.name}'s phone number was updated successfuly to ${updatedPerson.phone}`
+            );
+            setTimeout(() => setSuccessMessage(null), 5000);
+          })
+          .catch((error) => {
+            setErrorMessage(
+              `${possiblyExistingPerson.name} was already deleted from the server`
+            );
+            setTimeout(() => setErrorMessage(null), 5000);
+            setPersons(
+              persons.filter((p) => p.id !== possiblyExistingPerson.id)
+            );
+          });
+      }
+
+      setNewName("");
+      setNewPhone("");
       return;
     }
 
-    setPersons(persons.concat({ name: newName, phone: newPhone }));
-    setNewName("");
-    setNewPhone("");
+    const newPerson = { name: newName, phone: newPhone };
+    phonebookService.create(newPerson).then((createdPerson) => {
+      setPersons(persons.concat(createdPerson));
+      setNewName("");
+      setNewPhone("");
+
+      setSuccessMessage(`${createdPerson.name} was added successfuly`);
+      setTimeout(() => setSuccessMessage(null), 5000);
+    });
   };
 
   const handleShowWithChange = (event) => {
@@ -50,9 +93,18 @@ const App = () => {
           p.name.toLowerCase().includes(showWith.toLowerCase())
         );
 
+  const deletePerson = (person) => {
+    if (window.confirm(`are you sure you want to delete ${person.name}?`))
+      phonebookService.deletePerson(person.id).then(() => {
+        setPersons(persons.filter((p) => p.id !== person.id));
+        setSuccessMessage(`${person.name} was deleted successfully`);
+        setTimeout(() => setSuccessMessage(null), 5000);
+      });
+  };
+
   return (
     <div>
-      <h2>Phonebook</h2>
+      <h1>Phonebook</h1>
       <Filter onChange={handleShowWithChange} />
 
       <h3>Add a new</h3>
@@ -63,7 +115,9 @@ const App = () => {
       />
 
       <h2>Numbers</h2>
-      <Persons persons={peopleToShow} />
+      <Notification message={successMessage} isSuccess={true} />
+      <Notification message={errorMessage} isSuccess={false} />
+      <Persons persons={peopleToShow} deletePerson={deletePerson} />
     </div>
   );
 };

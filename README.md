@@ -8,7 +8,7 @@ _Started: 26 February 2023_
 
 - [x] Part 0 -- 26 February 2023
 - [x] Part 1 -- 26 February 2023
-- [ ] Part 2
+- [x] Part 2 -- 8 March 2023
 - [ ] Part 3
 - [ ] Part 4
 - [ ] Part 5

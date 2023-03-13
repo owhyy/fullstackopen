@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+/* eslint-disable no-alert */
+import { React, useState, useEffect } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
@@ -7,7 +8,7 @@ import phonebookService from "./services/phonebook";
 
 import "./index.css";
 
-const App = () => {
+function App() {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newPhone, setNewPhone] = useState("");
@@ -24,7 +25,7 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault();
 
-    const possiblyExistingPerson = persons.filter((p) => p.name === newName)[0];
+    const possiblyExistingPerson = persons.find((p) => p.name === newName);
     if (possiblyExistingPerson) {
       if (
         window.confirm(
@@ -46,20 +47,16 @@ const App = () => {
               `${updatedPerson.name}'s phone number was updated successfuly to ${updatedPerson.phone}`
             );
             setTimeout(() => setSuccessMessage(null), 5000);
+
+            setNewName("");
+            setNewPhone("");
           })
           .catch((error) => {
-            setErrorMessage(
-              `${possiblyExistingPerson.name} was already deleted from the server`
-            );
+            setErrorMessage(error.response.data.error);
             setTimeout(() => setErrorMessage(null), 5000);
-            setPersons(
-              persons.filter((p) => p.id !== possiblyExistingPerson.id)
-            );
           });
       }
 
-      setNewName("");
-      setNewPhone("");
       return;
     }
 
@@ -68,20 +65,17 @@ const App = () => {
       .create(newPerson)
       .then((createdPerson) => {
         setPersons(persons.concat(createdPerson));
-        setNewName("");
-        setNewPhone("");
 
         setSuccessMessage(`${createdPerson.name} was added successfuly`);
         setTimeout(() => setSuccessMessage(null), 5000);
       })
-      .catch(
-        (error) =>
-          setTimeout(() => {
-            console.log(error.response.data.error);
-            setErrorMessage(error.response.data.error);
-          }),
-        5000
-      );
+      .catch((error) => {
+        setErrorMessage(error.response.data.error);
+        setTimeout(() => setErrorMessage(null), 5000);
+      });
+
+    setNewName("");
+    setNewPhone("");
   };
 
   const handleShowWithChange = (event) => {
@@ -100,16 +94,16 @@ const App = () => {
     showWith === ""
       ? persons
       : persons.filter((p) =>
-          p.name.toLowerCase().includes(showWith.toLowerCase())
-        );
+        p.name.toLowerCase().includes(showWith.toLowerCase())
+      );
 
   const deletePerson = (person) => {
     if (window.confirm(`are you sure you want to delete ${person.name}?`))
-      phonebookService.deletePerson(person.id).then(() => {
-        setPersons(persons.filter((p) => p.id !== person.id));
-        setSuccessMessage(`${person.name} was deleted successfully`);
-        setTimeout(() => setSuccessMessage(null), 5000);
-      });
+    phonebookService.deletePerson(person.id).then(() => {
+      setPersons(persons.filter((p) => p.id !== person.id));
+      setSuccessMessage(`${person.name} was deleted successfully`);
+      setTimeout(() => setSuccessMessage(null), 5000);
+    });
   };
 
   return (
@@ -125,11 +119,11 @@ const App = () => {
       />
 
       <h2>Numbers</h2>
-      <Notification message={successMessage} isSuccess={true} />
+      <Notification message={successMessage} isSuccess />
       <Notification message={errorMessage} isSuccess={false} />
       <Persons persons={peopleToShow} deletePerson={deletePerson} />
     </div>
   );
-};
+}
 
 export default App;

@@ -64,14 +64,24 @@ const App = () => {
     }
 
     const newPerson = { name: newName, phone: newPhone };
-    phonebookService.create(newPerson).then((createdPerson) => {
-      setPersons(persons.concat(createdPerson));
-      setNewName("");
-      setNewPhone("");
+    phonebookService
+      .create(newPerson)
+      .then((createdPerson) => {
+        setPersons(persons.concat(createdPerson));
+        setNewName("");
+        setNewPhone("");
 
-      setSuccessMessage(`${createdPerson.name} was added successfuly`);
-      setTimeout(() => setSuccessMessage(null), 5000);
-    });
+        setSuccessMessage(`${createdPerson.name} was added successfuly`);
+        setTimeout(() => setSuccessMessage(null), 5000);
+      })
+      .catch(
+        (error) =>
+          setTimeout(() => {
+            console.log(error.response.data.error);
+            setErrorMessage(error.response.data.error);
+          }),
+        5000
+      );
   };
 
   const handleShowWithChange = (event) => {

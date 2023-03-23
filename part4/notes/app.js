@@ -1,18 +1,24 @@
-const config = require("./utils/config");
 const express = require("express");
+
 const app = express();
+const mongoose = require("mongoose");
 const cors = require("cors");
+const config = require("./utils/config");
 const notesRouter = require("./controllers/notes");
 const middleware = require("./utils/middleware");
 const logger = require("./utils/logger");
-const mongoose = require("mongoose");
 
 mongoose.set("strictQuery", false);
 
-logger.info("connecting to ", config.MONGODB_URI);
+const MONGODB_URI =
+  process.env.NODE_ENV === "test"
+    ? process.env.TEST_MONGODB_URI
+    : process.env.MONGODB_URI;
+
+logger.info("connecting to ", MONGODB_URI);
 
 mongoose
-  .connect(config.MONGODB_URI)
+  .connect(MONGODB_URI)
   .then(() => {
     logger.info("connected to MongoDB");
   })

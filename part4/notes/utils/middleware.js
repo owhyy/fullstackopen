@@ -14,10 +14,15 @@ const unknownEndpoint = (request, response) => {
 
 const errorHandler = (error, request, response, next) => {
   logger.info(error.message);
-  if (error.name == "CastError")
+  if (error.name === "CastError") {
     return response.status(400).send({ error: "malformed id" });
-  else if (error.name == "ValidationError")
+  } else if (error.name === "ValidationError") {
     return response.status(400).send({ error: error.message });
+  } else if (error.name === "JsonWebTokenError") {
+    return response.status(400).send({ error: error.message });
+  } else if (error.name === "TokenExpiredError") {
+    return response.status(401).send({ error: "token expired" });
+  }
 
   next(error);
 };

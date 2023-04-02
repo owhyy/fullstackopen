@@ -10,7 +10,7 @@ _Started: 26 February 2023_
 - [x] Part 1 -- 26 February 2023
 - [x] Part 2 -- 8 March 2023
 - [x] Part 3 -- 14 March 2023
-- [ ] Part 4
+- [x] Part 4 -- 02 April 2023
 - [ ] Part 5
 - [ ] Part 6
 - [ ] Part 7

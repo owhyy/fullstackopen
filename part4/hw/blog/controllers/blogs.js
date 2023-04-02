@@ -1,16 +1,6 @@
-const jwt = require("jsonwebtoken");
-
+/* eslint-disable no-underscore-dangle */
 const blogsRouter = require("express").Router();
 const Blog = require("../models/blog");
-const User = require("../models/user");
-
-const getTokenFrom = (request) => {
-  const authorization = request.get("authorization");
-  if (authorization && authorization.startsWith("Bearer ")) {
-    return authorization.replace("Bearer ", "");
-  }
-  return null;
-};
 
 blogsRouter.get("/", async (request, response) => {
   const blogs = await Blog.find({}).populate("user", { username: 1, name: 1 });
@@ -18,19 +8,8 @@ blogsRouter.get("/", async (request, response) => {
 });
 
 blogsRouter.post("/", async (request, response) => {
-  const verifiedToken = jwt.verify(getTokenFrom(request), process.env.SECRET, {
-    expiresIn: 60 * 60,
-  });
-
-  const userId = verifiedToken.id;
-  if (!userId) {
-    return response.status(401).json({
-      error: "token invalid",
-    });
-  }
-
-  const user = await User.findById(userId);
-  if (!user) return response.status(404).json({ error: "user not found" });
+  const { user } = request;
+  if (!user) return response.status(401).json({ error: "unauthorized" });
 
   const { title, likes, author, url } = request.body;
   const blog = new Blog({
@@ -45,12 +24,29 @@ blogsRouter.post("/", async (request, response) => {
   user.blogs = user.blogs.concat(savedBlog.id);
   await user.save();
 
-  response.status(201).json(savedBlog);
+  return response.status(201).json(savedBlog);
 });
 
 blogsRouter.delete("/:id", async (request, response) => {
-  await Blog.findByIdAndDelete(request.params.id);
-  response.status(204).end();
+  const { user } = request;
+  if (!user) return response.status(401).json({ error: "unauthorized" });
+
+  const blog = await Blog.findByOne(request.params.id);
+  if (!blog) return response.status(404).json({ error: "blog not found" });
+
+  if (blog.user._id.toString() !== user._id.toString()) {
+    return response
+      .status(400)
+      .json({ error: "you do not have the permission to delete this blog" });
+  }
+  await blog.delete();
+
+  user.blogs = user.blogs.filter(
+    (userBlog) => blog._id.toString() === userBlog._id.toString()
+  );
+  await user.save();
+
+  return response.status(204).end();
 });
 
 blogsRouter.put("/:id", async (request, response) => {

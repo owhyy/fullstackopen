@@ -6,14 +6,18 @@ const User = require("../models/user");
 usersRouter.post("/", async (request, response) => {
   const { name, username, password } = request.body;
 
+  if (!password || !username) {
+    return response
+      .status(400)
+      .json({ error: "password and username cannot be empty" });
+  }
   if (username.length <= 3 || password.length <= 3)
-    response
+    return response
       .status(400)
       .json({ error: "password and username length must be > 3" });
 
-
   if (await User.findOne({ username }))
-    response.status(400).json({ error: "user with this already exists" });
+    return response.status(400).json({ error: "user with this already exists" });
 
   const passwordHash = await bcrypt.hash(password, 10);
   const user = new User({ name, username, passwordHash });

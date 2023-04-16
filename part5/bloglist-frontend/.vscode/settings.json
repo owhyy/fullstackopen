@@ -1,0 +1,16 @@
+{
+  "search.exclude": {
+    "**/build": true,
+    "node_modules": true
+  },
+  "files.exclude": {
+    "**/package-lock.json": true
+  },
+  "editor.formatOnSave": true,
+  "[javascript]": {
+    "editor.formatOnSave": false
+  },
+  "eslint.options": {
+    "overrideConfigFile": "./.eslintrc.json"
+  }
+}

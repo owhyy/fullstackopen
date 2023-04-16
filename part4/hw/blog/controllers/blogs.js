@@ -12,6 +12,10 @@ blogsRouter.post("/", async (request, response) => {
   if (!user) return response.status(401).json({ error: "unauthorized" });
 
   const { title, likes, author, url } = request.body;
+
+  if (!(title && url))
+    return response.status(400).json({ error: "url and title are required" });
+
   const blog = new Blog({
     title,
     likes,
@@ -31,7 +35,7 @@ blogsRouter.delete("/:id", async (request, response) => {
   const { user } = request;
   if (!user) return response.status(401).json({ error: "unauthorized" });
 
-  const blog = await Blog.findByOne(request.params.id);
+  const blog = await Blog.findByIdAndDelete(request.params.id);
   if (!blog) return response.status(404).json({ error: "blog not found" });
 
   if (blog.user._id.toString() !== user._id.toString()) {
@@ -56,11 +60,12 @@ blogsRouter.put("/:id", async (request, response) => {
     likes: body.likes,
     author: body.author,
     url: body.url,
+    user: body.user
   };
 
   const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {
     new: true,
-  });
+  }).populate("user", { username: 1, name: 1 });
   response.status(201).json(updatedBlog);
 });
 

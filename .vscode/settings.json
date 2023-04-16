@@ -1,0 +1,10 @@
+{
+  "search.exclude": {
+    "**/build": true,
+    "node_modules": true
+  },
+  "files.exclude": {
+    "**/package-lock.json": true
+  },
+  "eslint.workingDirectories": [{ "mode": "auto" }]
+}

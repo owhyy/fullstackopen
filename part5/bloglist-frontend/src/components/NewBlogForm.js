@@ -21,6 +21,7 @@ function NewBlogForm({ addNewBlog }) {
         <input
           type='text'
           name='Title'
+          placeholder='enter a title'
           onChange={({ target }) => {
             setTitle(target.value);
           }}
@@ -32,6 +33,7 @@ function NewBlogForm({ addNewBlog }) {
         <input
           type='text'
           name='Author'
+          placeholder='enter the author'
           onChange={({ target }) => {
             setAuthor(target.value);
           }}
@@ -43,6 +45,7 @@ function NewBlogForm({ addNewBlog }) {
         <input
           type='text'
           name='url'
+          placeholder='enter the url'
           onChange={({ target }) => {
             setUrl(target.value);
           }}

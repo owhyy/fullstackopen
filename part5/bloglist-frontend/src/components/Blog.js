@@ -31,11 +31,11 @@ const Blog = ({ currentUser, blog, performLike, performDelete }) => {
 
   // TODO: this is stupid but i cant think of a better way right now
   return (
-    <div>
+    <div className='blog'>
       <div style={hideWhenShowFull}>
         {blog.title} by {blog.author} <button onClick={toggleDisplayFull}>display</button>
       </div>
-      <div style={displayWhenShowFull}>
+      <div style={displayWhenShowFull} className='fullContent'>
         {blog.title} by {blog.author} <button onClick={toggleDisplayFull}>hide</button>
         <br />
         <a href={blog.url}>{blog.url}</a>

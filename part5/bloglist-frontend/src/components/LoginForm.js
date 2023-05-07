@@ -21,6 +21,7 @@ function LoginForm({ performLogin }) {
           username
           <br />
           <input
+            id='username'
             name='Username'
             onChange={({ target }) => setUsername(target.value)}
             type='text'
@@ -34,6 +35,7 @@ function LoginForm({ performLogin }) {
           password
           <br />
           <input
+            id='password'
             name='Password'
             onChange={({ target }) => setPassword(target.value)}
             type='password'
@@ -43,7 +45,7 @@ function LoginForm({ performLogin }) {
 
         <br />
 
-        <button type='submit'>login</button>
+        <button type='submit' id='login-button'>login</button>
       </form>
     </div>
   );

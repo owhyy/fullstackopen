@@ -40,11 +40,11 @@ const Blog = ({ currentUser, blog, performLike, performDelete }) => {
         <br />
         <a href={blog.url}>{blog.url}</a>
         <br />
-        likes {blog.likes} <button onClick={handleLike}> like </button>
+        likes {blog.likes} <button onClick={handleLike} id='like-button'> like </button>
         <br />
         {blog.user.name}
         <br />
-        <button style={showWhenCreatedByCurrentUser} onClick={handleDelete}>
+        <button style={showWhenCreatedByCurrentUser} onClick={handleDelete} id='delete-button'>
           remove
         </button>
       </div>

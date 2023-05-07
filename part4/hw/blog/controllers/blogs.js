@@ -9,6 +9,7 @@ blogsRouter.get("/", async (request, response) => {
 
 blogsRouter.post("/", async (request, response) => {
   const { user } = request;
+  console.log(user)
   if (!user) return response.status(401).json({ error: "unauthorized" });
 
   const { title, likes, author, url } = request.body;

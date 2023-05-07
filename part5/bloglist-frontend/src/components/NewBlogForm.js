@@ -18,7 +18,8 @@ function NewBlogForm({ addNewBlog }) {
       <form onSubmit={handleCreate}>
         title
         <br />
-        <input
+          <input
+          id='title'
           type='text'
           name='Title'
           placeholder='enter a title'
@@ -30,7 +31,8 @@ function NewBlogForm({ addNewBlog }) {
         <br />
         author
         <br />
-        <input
+          <input
+          id='author'
           type='text'
           name='Author'
           placeholder='enter the author'
@@ -42,7 +44,8 @@ function NewBlogForm({ addNewBlog }) {
         <br />
         url
         <br />
-        <input
+          <input
+          id='url'
           type='text'
           name='url'
           placeholder='enter the url'
@@ -52,7 +55,7 @@ function NewBlogForm({ addNewBlog }) {
         />
         <br />
         <br />
-        <button type='submit'>create</button>
+        <button type='submit' id='create-blog'>create</button>
       </form>
     </div>
   );

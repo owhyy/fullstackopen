@@ -4,15 +4,17 @@ This repository contains the solutions to the great [fullstackopen](https://full
 
 ## Current status:
 
-_Started: 26 February 2023_
+- _Started: 26 February 2023_
+- _On hold as of 02 April 2023_
+- _In progress as of 15 December 2023_
 
 - [x] Part 0 -- 26 February 2023
 - [x] Part 1 -- 26 February 2023
 - [x] Part 2 -- 8 March 2023
 - [x] Part 3 -- 14 March 2023
 - [x] Part 4 -- 02 April 2023
-- [ ] Part 5
-- [ ] Part 6
+- [x] Part 5 -- ?? ????? 2023
+- [x] Part 6 -- 16 December 2023
 - [ ] Part 7
 - [ ] Part 8
 - [ ] Part 9

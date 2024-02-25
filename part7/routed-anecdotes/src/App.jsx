@@ -91,9 +91,9 @@ const Footer = () => (
 );
 
 const CreateNew = (props) => {
-  const  content  = useField("text");
-  const  author  = useField("text");
-  const  info  = useField("text");
+  const content = useField("text");
+  const author = useField("text");
+  const info = useField("text");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -126,7 +126,7 @@ const CreateNew = (props) => {
         </div>
         <div>
           url for more info
-          <input {...info } reset="" />
+          <input {...info} reset="" />
         </div>
         <button>create</button>
         <button onClick={handleReset}>reset</button>

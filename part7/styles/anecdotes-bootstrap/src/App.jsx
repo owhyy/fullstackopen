@@ -1,47 +1,53 @@
 import { useState } from "react";
 import { Link, Route, Routes, useMatch, useNavigate } from "react-router-dom";
 import { useField } from "./hooks";
+import { Alert, Button, Form, Nav, Navbar, Table } from "react-bootstrap";
 
 const Menu = () => {
   const padding = {
     paddingRight: 5,
   };
   return (
-    <div>
-      <Link to="/" style={padding}>
-        anecdotes
-      </Link>
-      <Link to="/create" style={padding}>
-        create new
-      </Link>
-      <Link to="/about" style={padding}>
-        about
-      </Link>
-    </div>
+    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+      <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+      <Navbar.Collapse id="responsive-navbar-nav">
+        <Nav className="me-auto">
+          <Nav.Link href="#" as="span">
+            <Link style={padding} to="/">
+              anecdotes
+            </Link>
+          </Nav.Link>
+          <Nav.Link href="#" as="span">
+            <Link style={padding} to="/create">
+              create new
+            </Link>
+          </Nav.Link>
+          <Nav.Link href="#" as="span">
+            <Link style={padding} to="/about">
+              about
+            </Link>
+          </Nav.Link>
+        </Nav>
+      </Navbar.Collapse>
+    </Navbar>
   );
-};
-
-const Notification = ({ notification }) => {
-  const style = {
-    border: "solid",
-    padding: 10,
-    borderWidth: 1,
-    marginBottom: 5,
-  };
-
-  return notification ? <div style={style}>{notification}</div> : "";
 };
 
 const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
-    <ul>
-      {anecdotes.map((anecdote) => (
-        <li key={anecdote.id}>
-          <Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
-        </li>
-      ))}
-    </ul>
+    <Table striped>
+      <tbody>
+        {anecdotes.map((anecdote) => (
+          <tr key={anecdote.id}>
+            <td>
+              <Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
+            </td>
+            <td>{anecdote.author}</td>
+          </tr>
+        ))}
+      </tbody>
+    </Table>
   </div>
 );
 
@@ -115,22 +121,37 @@ const CreateNew = (props) => {
   return (
     <div>
       <h2>create a new anecdote</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          content
-          <input {...content} reset="" />
-        </div>
-        <div>
-          author
-          <input {...author} reset="" />
-        </div>
-        <div>
-          url for more info
-          <input {...info} reset="" />
-        </div>
-        <button>create</button>
-        <button onClick={handleReset}>reset</button>
-      </form>
+      <Form onSubmit={handleSubmit}>
+        <Form.Group>
+          <Form.Label>
+            content
+            <Form.Control
+              type="text"
+              name="content"
+              {...content}
+            ></Form.Control>
+          </Form.Label>
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>
+            author
+            <Form.Control type="text" name="author" {...author}></Form.Control>
+          </Form.Label>
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>
+            info
+            <Form.Control type="text" name="info" {...info}></Form.Control>
+          </Form.Label>
+        </Form.Group>
+
+        <Button variant="primary" type="submit">
+          create
+        </Button>
+        <Button variant="primary" onClick={handleReset}>
+          reset
+        </Button>
+      </Form>
     </div>
   );
 };
@@ -185,10 +206,10 @@ const App = () => {
     : null;
 
   return (
-    <div>
+    <div className="container">
       <h1>Software anecdotes</h1>
       <Menu />
-      <Notification notification={notification} />
+      {notification && <Alert variant="success">{notification}</Alert>}
       <Routes>
         <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
         <Route

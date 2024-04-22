@@ -20,7 +20,6 @@ const useCountry = (name) => {
 
   useEffect(async () => {
     const country = await countryService.getCountryByName(name);
-    console.log(country);
     setCountry(country);
   }, []);
 

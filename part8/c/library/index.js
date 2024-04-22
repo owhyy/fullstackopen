@@ -91,7 +91,7 @@ const resolvers = {
       let filterArgs = [];
       if (args.author) filterArgs.push({ "author.name": args.author });
       if (args.genre) filterArgs.push({ genres: { $in: args.genre } });
-      return Book.find({ $and: filterArgs }).populate("author");
+	return Book.find(filterArgs.count ? { $and: filterArgs } : {}).populate("author");
     },
     allAuthors: async () => Author.find(),
     me: async (_, args, context) => context.currentUser,

@@ -2,20 +2,23 @@ import { useMutation } from "@apollo/client";
 import { useState } from "react";
 import { LOGIN } from "../constants";
 
-const Login = (props) => {
+const Login = ({ show, setToken }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const [performLogin] = useMutation(LOGIN);
+  const [login, result] = useMutation(LOGIN);
 
-    if (!props.show) {
-	return null;
-    }
-    
+  if (!show) {
+    return null;
+  }
+
   const submit = async (event) => {
     event.preventDefault();
 
-    performLogin({ variables: { username, password } });
+    login({ variables: { username, password } });
+    const token = result.data.login.value;
+    localStorage.setItem("library-user-token", token);
+    setToken(token);
 
     setUsername("");
     setPassword("");
@@ -37,8 +40,8 @@ const Login = (props) => {
             value={password}
             onChange={({ target }) => setPassword(target.value)}
           />
-          </div>
-	  <button type="submit">login</button>
+        </div>
+        <button type="submit">login</button>
       </form>
     </div>
   );

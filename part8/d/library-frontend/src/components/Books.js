@@ -1,15 +1,26 @@
-import { useQuery } from "@apollo/client";
+import { useQuery, executeQuery } from "@apollo/client";
 import { ALL_BOOKS } from "../constants";
+import { useState, useEffect } from "react";
 
 const Books = (props) => {
-  const result = useQuery(ALL_BOOKS);
+  const [books, setBooks] = useState([]);
+  const [genre, setGenre] = useState("");
+
+  const {loading, data} = useQuery(ALL_BOOKS);
+
+  useEffect(() => {
+    if (data)
+      setBooks(data.allBooks);
+  }, [data]);
+
+  if (loading) {
+    return <div>loading...</div>;
+  }
+
   if (!props.show) {
     return null;
   }
-
-  if (result.loading) {
-    return <div>loading...</div>;
-  }
+  const genres = [...new Set(books.map((b) => b.genres).flat(1))];
 
   return (
     <div>
@@ -22,7 +33,7 @@ const Books = (props) => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {result.data.allBooks.map((a) => (
+          {books.map((a) => (
             <tr key={a.title}>
               <td>{a.title}</td>
               <td>{a.author.name}</td>
@@ -31,6 +42,12 @@ const Books = (props) => {
           ))}
         </tbody>
       </table>
+
+      {genres.map((g) => (
+        <button value={g} key={g} onClick={({ target }) => setBooks(books.filter((b) => b.genres.includes(target.value)))}>
+          {g}
+        </button>
+      ))}
     </div>
   );
 };

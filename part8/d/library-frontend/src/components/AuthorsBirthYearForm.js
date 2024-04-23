@@ -4,7 +4,7 @@ import { ALL_AUTHORS, UPDATE_AUTHOR } from "../constants";
 
 const AuthorsBirthYearForm = () => {
   const result = useQuery(ALL_AUTHORS);
-  const [name, setName] = useState("");
+  const [id, setId] = useState("");
   const [year, setYear] = useState("");
 
   const [updateBirthYear] = useMutation(UPDATE_AUTHOR, {
@@ -15,10 +15,10 @@ const AuthorsBirthYearForm = () => {
     event.preventDefault();
 
     const yearAsInt = parseInt(year);
-    console.log(name, year);
-    updateBirthYear({ variables: { name, born: yearAsInt } });
+    console.log(id, year);
+    updateBirthYear({ variables: { id, born: yearAsInt } });
 
-    setName("");
+    setId("");
     setYear("");
   };
 
@@ -29,9 +29,9 @@ const AuthorsBirthYearForm = () => {
       <h2>set birthyear</h2>
       <form onSubmit={submit}>
         <div>
-          <select onChange={({ target }) => setName(target.value)}>
+          <select onChange={({ target }) => setId(target.value)}>
             {result.data.allAuthors.map((author) => (
-              <option key={author.name} value={author.name}>
+              <option key={author.name} value={author.id}>
                 {author.name}
               </option>
             ))}

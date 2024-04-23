@@ -50,14 +50,16 @@ export const ADD_BOOK = gql`
       published
       id
       genres
-      author
+      author {
+        name
+      }
     }
   }
 `;
 
 export const UPDATE_AUTHOR = gql`
-  mutation Mutation($name: String!, $born: Int!) {
-    editAuthor(name: $name, born: $born) {
+  mutation Mutation($id: ID!, $born: Int!) {
+    editAuthor(id: $id, born: $born) {
       name
       id
       born

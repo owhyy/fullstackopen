@@ -125,7 +125,7 @@ const resolvers = {
       const book = Book({ ...args, author: author });
       console.log(book);
       try {
-        const savedBook = await book.save();
+        return await book.save();
       } catch (error) {
         throw new GraphQLError("Invalid input", {
           extensions: {
@@ -135,7 +135,6 @@ const resolvers = {
           },
         });
       }
-      return savedBook;
     },
     editAuthor: async (_, args, { currentUser }) => {
       if (!currentUser)
@@ -181,7 +180,6 @@ const resolvers = {
     },
     login: async (_, args) => {
       const user = await User.findOne({ username: args.username });
-      console.log(user)
 
       if (!user || args.password !== "secret") {
         throw new GraphQLError("wrong credentials", {
